@@ -1,33 +1,33 @@
 package com.example.demo.User.dto;
 
-import com.example.demo.User.enums.AppRoles;
+import com.example.demo.User.enums.UserRole;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-//import javax.validation.constraints.NotBlank;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class UserForm {
-
-//    @NotBlank
-    private UUID uuid;
-//    @NotBlank
+    @NotBlank(message = "Login may not be blank")
     private String login;
-//    @NotBlank
+    @NotBlank(message = "Lastname may not be blank")
     private String lastname;
-//    @NotBlank
+    @NotBlank(message = "Firstname may not be blank")
     private String firstname;
-//    @NotBlank
-    private AppRoles userRole;
-//    @NotBlank
+    @NotNull
+    private UserRole userRole;
+    @NotBlank(message = "Password may not be blank")
     private String password;
-//    @NotBlank
+    @Email
+    @NotBlank(message = "Email may not be blank")
     private String email;
-//    @NotBlank
-//    @Positive
+    @Positive
     private int salaryPerHour;
 }

@@ -1,6 +1,6 @@
 package com.example.demo.User.enums;
 
-public enum AppRoles {
+public enum UserRole {
 
     ADMINISTRATOR,
     MANAGER,

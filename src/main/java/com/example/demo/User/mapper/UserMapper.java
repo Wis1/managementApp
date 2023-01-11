@@ -2,45 +2,57 @@ package com.example.demo.User.mapper;
 
 import com.example.demo.User.domain.User;
 import com.example.demo.User.dto.UserDto;
+import com.example.demo.User.dto.UserForm;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
 public class UserMapper {
 
     public static UserDto mapToUserDto(final User user) {
-        return new UserDto(
-                user.getId(),
-                user.getUuid(),
-                user.getLogin(),
-                user.getLastname(),
-                user.getFirstname(),
-                user.getUserRole(),
-                user.getPassword(),
-                user.getEmail(),
-                user.getSalaryPerHour()
-        );
+        return UserDto.builder()
+                .uuid(user.getUuid())
+                .login(user.getLogin())
+                .lastname(user.getLastname())
+                .firstname(user.getFirstname())
+                .userRole(user.getUserRole())
+                .password(user.getPassword())
+                .email(user.getEmail())
+                .salaryPerHour(user.getSalaryPerHour())
+                .build();
     }
 
     public static User mapToUser(final UserDto userDto) {
-        return new User(
-                userDto.getId(),
-                userDto.getUuid(),
-                userDto.getLogin(),
-                userDto.getLastname(),
-                userDto.getFirstname(),
-                userDto.getUserRole(),
-                userDto.getPassword(),
-                userDto.getEmail(),
-                userDto.getSalaryPerHour()
-        );
+        return User.builder()
+                .uuid(userDto.getUuid())
+                .login(userDto.getLogin())
+                .lastname(userDto.getLastname())
+                .firstname(userDto.getFirstname())
+                .userRole(userDto.getUserRole())
+                .password(userDto.getPassword())
+                .email(userDto.getEmail())
+                .salaryPerHour(userDto.getSalaryPerHour())
+                .build();
     }
 
-    public static List<UserDto> mapToListUserDto(final List<User> userList){
+    public static User mapToUser(final UserForm userForm) {
+        return User.builder()
+                .uuid(UUID.randomUUID())
+                .login(userForm.getLogin())
+                .lastname(userForm.getLastname())
+                .firstname(userForm.getFirstname())
+                .userRole(userForm.getUserRole())
+                .password(userForm.getPassword())
+                .email(userForm.getEmail())
+                .salaryPerHour(userForm.getSalaryPerHour())
+                .build();
+    }
+
+    public static List<UserDto> mapToListUserDto(final List<User> userList) {
         return userList.stream()
-                .map(u->new UserDto(
-                        u.getId(),
+                .map(u -> new UserDto(
                         u.getUuid(),
                         u.getLogin(),
                         u.getLastname(),
