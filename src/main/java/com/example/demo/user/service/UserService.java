@@ -6,6 +6,7 @@ import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.dto.UserForm;
+import com.example.demo.user.dto.UserSearch;
 import com.example.demo.user.enums.UserRole;
 import com.example.demo.user.mapper.UserMapper;
 import com.example.demo.user.repository.UserRepository;
@@ -20,6 +21,8 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserSpecification userSpecification;
+
 
     public List<UserDto> getAllUsers() {
 
@@ -66,5 +69,10 @@ public class UserService {
 
         if (userRepository.existsByLogin(login)) throw new UserIsAlreadyExists(login);
 
+    }
+
+    public List<UserDto> filterByCriteria(UUID uuid, UserSearch userSearch){
+        checkUserExistsAndIsAdmin(uuid);
+        return UserMapper.mapToListUserDto(userRepository.findAll(userSpecification.getUsers(userSearch)));
     }
 }

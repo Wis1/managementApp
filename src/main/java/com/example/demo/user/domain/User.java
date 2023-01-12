@@ -45,5 +45,5 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
     @Column(name = "salary_per_hour", nullable = false)
-    private int salaryPerHour;
+    private Integer salaryPerHour;
 }

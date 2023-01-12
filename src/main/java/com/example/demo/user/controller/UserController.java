@@ -2,6 +2,7 @@ package com.example.demo.user.controller;
 
 import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.dto.UserForm;
+import com.example.demo.user.dto.UserSearch;
 import com.example.demo.user.service.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -56,5 +57,9 @@ public class UserController {
         userService.deleteUser(adminUuid, userUuid);
     }
 
+    @GetMapping(value = "/uuid//{adminUuid}")
+    public List<UserDto> filterUserByCriteria(@PathVariable(name = "adminUuid") UUID adminUuid, UserSearch userSearch) {
 
+        return userService.filterByCriteria(adminUuid, userSearch);
+    }
 }
