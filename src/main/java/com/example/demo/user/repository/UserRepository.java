@@ -1,6 +1,6 @@
-package com.example.demo.User.repository;
+package com.example.demo.user.repository;
 
-import com.example.demo.User.domain.User;
+import com.example.demo.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +14,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     void deleteByUuid(UUID uuid);
 
-    Optional<User> getUserByLogin(String login);
+    Optional<User> findByLogin(String login);
 
     boolean existsByLogin(String login);
+
 
 }

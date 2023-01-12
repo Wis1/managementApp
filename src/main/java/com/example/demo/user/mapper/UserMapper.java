@@ -1,8 +1,8 @@
-package com.example.demo.User.mapper;
+package com.example.demo.user.mapper;
 
-import com.example.demo.User.domain.User;
-import com.example.demo.User.dto.UserDto;
-import com.example.demo.User.dto.UserForm;
+import com.example.demo.user.domain.User;
+import com.example.demo.user.dto.UserDto;
+import com.example.demo.user.dto.UserForm;
 
 import java.util.List;
 import java.util.UUID;

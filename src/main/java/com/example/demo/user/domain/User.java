@@ -1,7 +1,7 @@
-package com.example.demo.User.domain;
+package com.example.demo.user.domain;
 
 
-import com.example.demo.User.enums.UserRole;
+import com.example.demo.user.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
