@@ -145,4 +145,16 @@ class UserServiceTest {
         //When & Then
         verify(userRepository, times(1)).deleteByUuid(user.getUuid());
     }
+
+    @Test
+    void shouldGetUserWhenGetUserByUuid() {
+
+        //Given
+        User user = InitUser.createUserManager();
+        when(userRepository.findByUuid(user.getUuid())).thenReturn(Optional.of(user));
+        userService.getUser(user.getUuid());
+
+        //When & Then
+        verify(userRepository, times(1)).findByUuid(user.getUuid());
+    }
 }
