@@ -5,10 +5,9 @@ import com.example.demo.exception.UserIsNotAdministrator;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserForm;
-import com.example.demo.user.enums.UserRole;
+import com.example.demo.user.dto.UserSearch;
 import com.example.demo.user.mapper.UserMapper;
 import com.example.demo.user.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,55 +27,47 @@ class UserServiceTest {
 
     private static final UserRepository userRepository = Mockito.mock(UserRepository.class);
 
+    private static final UserSpecification userSpecification = Mockito.mock(UserSpecification.class);
+
     @InjectMocks
     private UserService userService;
 
-    private List<User> userList;
-
-    @BeforeEach
-    void createUserDtoList() {
-
-        this.userList = List.of(
-                new User(1L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "poul", "bulek", "korek", UserRole.ADMINISTRATOR, "PACH", "antyghin@gmail.com", 68),
-                new User(2L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c45"), "poulsen", "bulek", "korek", UserRole.MANAGER, "PACH", "antyghin@gmail.com", 68),
-                new User(3L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c88"), "poul", "bulek", "korek", UserRole.EMPLOYEE, "PACH", "antyghin@gmail.com", 50));
-    }
-
     @Test
-    void shouldThrowUserIsNotAdministratorWhenAddNewUserByManager() {
+    void shouldThrowUserIsNotAdministratorWhenAddSaveUserByManager() {
 
         //Given
-        UserForm userForm = new UserForm("poul", "bilek", "cor", UserRole.EMPLOYEE, "kilo", "antygn@gmail.com", 79);
-        User user = new User(7L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "poul", "bulek", "korek", UserRole.MANAGER, "PACH", "antyghin@gmail.com", 68);
-        UUID uuidAdmin = (UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"));
-        when(userRepository.findByUuid(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"))).thenReturn(Optional.of(user));
+        User userManager = InitUser.createUserManager();
+        UserForm userForm = InitUser.createUserForm();
+        when(userRepository.findByUuid(userManager.getUuid())).thenReturn(Optional.of(userManager));
 
         //When & Then
-        assertThrows(UserIsNotAdministrator.class, () -> userService.saveUser(uuidAdmin, userForm));
-
+        assertThrows(UserIsNotAdministrator.class, () -> userService.saveUser(userManager.getUuid(), userForm));
     }
 
     @Test
     void shouldThrowsUserNotFoundExceptionWhenAddNewUserByNotExistUuid() {
 
-        UserForm userForm = new UserForm("poul", "bilek", "cor", UserRole.EMPLOYEE, "kilo", "antygn@gmail.com", 79);
-        User user = new User(7L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "poul", "bulek", "korek", UserRole.MANAGER, "PACH", "antyghin@gmail.com", 68);
-        UUID uuidAdmin = (UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107888"));
-        when(userRepository.findByUuid(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"))).thenReturn(Optional.of(user));
+        // Given
+        User user = InitUser.createUserManager();
+        UserForm userForm = InitUser.createUserForm();
+        UUID uuid = UUID.randomUUID();
+        when(userRepository.findByUuid(user.getUuid())).thenReturn(Optional.of(user));
 
-        assertThrows(UserNotFoundException.class, () -> userService.saveUser(uuidAdmin, userForm));
-
+        // When & Then
+        assertThrows(UserNotFoundException.class, () -> userService.saveUser(uuid, userForm));
     }
 
     @Test
     void shouldDisplayCorrectMessageExceptionWhenUserIsNotAdministrator() {
-        UserForm userForm = new UserForm("poul", "bilek", "cor", UserRole.EMPLOYEE, "kilo", "antygn@gmail.com", 79);
-        User user = new User(7L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "poul", "bulek", "korek", UserRole.MANAGER, "PACH", "antyghin@gmail.com", 68);
-        UUID uuidAdmin = (UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"));
-        when(userRepository.findByUuid(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"))).thenReturn(Optional.of(user));
 
-        RuntimeException exception = assertThrows(UserIsNotAdministrator.class, () -> userService.saveUser(uuidAdmin, userForm));
-        String expectedMessage = ("User with this uuid: " + uuidAdmin + " is not administrator");
+        // Given
+        UserForm userForm = InitUser.createUserForm();
+        User userManager = InitUser.createUserManager();
+        when(userRepository.findByUuid(userManager.getUuid())).thenReturn(Optional.of(userManager));
+
+        // When& Then
+        RuntimeException exception = assertThrows(UserIsNotAdministrator.class, () -> userService.saveUser(userManager.getUuid(), userForm));
+        String expectedMessage = (String.format("User with this uuid: %s is not administrator", userManager.getUuid()));
         assertEquals(expectedMessage, exception.getMessage());
     }
 
@@ -84,16 +75,17 @@ class UserServiceTest {
     void shouldDisplayCorrectMessageExceptionWhenAddNewUserAndLoginAlreadyExists() {
 
         //Given
-        User adminUser = new User(7L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "poul", "bulek", "korek", UserRole.ADMINISTRATOR, "PACH", "antyghin@gmail.com", 68);
-        UserForm userForm = new UserForm("poul", "bilek", "cor", UserRole.EMPLOYEE, "kilo", "antygn@gmail.com", 79);
-        when(userRepository.findByUuid(adminUser.getUuid())).thenReturn(Optional.of(adminUser));
-        when(userRepository.existsByLogin("poul")).thenReturn(true);
+        User userAdmin = InitUser.createUserAdmin();
+        UserForm userForm = InitUser.createUserForm();
 
-        //When
-        RuntimeException exception = assertThrows(UserIsAlreadyExists.class, () -> userService.addNewUser(adminUser.getUuid(), userForm));
-        String expectedMessage = ("User with this login: " + "poul" + " is already exists");
+        when(userRepository.findByUuid(userAdmin.getUuid())).thenReturn(Optional.of(userAdmin));
+        when(userRepository.existsByLogin(userForm.getLogin())).thenReturn(true);
 
-        //Then
+
+        RuntimeException exception = assertThrows(UserIsAlreadyExists.class, () -> userService.addNewUser(userAdmin.getUuid(), userForm));
+        String expectedMessage = (String.format("User with this login: %s is already exists", userForm.getLogin()));
+
+        //When & Then
         assertEquals(expectedMessage, exception.getMessage());
 
 
@@ -103,10 +95,25 @@ class UserServiceTest {
     void shouldGetUserList() {
 
         //Given
+        List<User> userList = InitUser.createUserList();
         when(userRepository.findAll()).thenReturn(userList);
 
         //When & Then
         assertEquals(UserMapper.mapToListUserDto(userList), userService.getAllUsers());
 
+    }
+
+    @Test
+    void shouldGetAllUserListWhenFilterWithoutFilters() {
+
+        //Given
+        User userAdmin = InitUser.createUserAdmin();
+        List<User> userList = InitUser.createUserList();
+        UserSearch userSearch = new UserSearch(null, null, null, null, null, null);
+        when(userRepository.findByUuid(userAdmin.getUuid())).thenReturn(Optional.of(userAdmin));
+        when(userRepository.findAll(userSpecification.getUsers(userSearch))).thenReturn(userList);
+
+        //When & Then
+        assertEquals(UserMapper.mapToListUserDto(userList), userService.filterByCriteria(userAdmin.getUuid(), userSearch));
     }
 }
