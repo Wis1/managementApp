@@ -20,6 +20,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,7 +47,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldThrowsUserNotFoundExceptionWhenAddNewUserByNotExistUuid() {
+    void shouldThrowUserNotFoundExceptionWhenAddNewUserByNotExistUuid() {
 
         // Given
         User user = InitUser.createUserManager();
@@ -115,5 +117,19 @@ class UserServiceTest {
 
         //When & Then
         assertEquals(UserMapper.mapToListUserDto(userList), userService.filterByCriteria(userAdmin.getUuid(), userSearch));
+    }
+
+    @Test
+    void shouldSaveUserWhenAddNewUser() {
+
+        //Given
+        UserForm userForm = InitUser.createUserForm();
+        User userAdmin = InitUser.createUserAdmin();
+        when(userRepository.findByUuid(userAdmin.getUuid())).thenReturn(Optional.of(userAdmin));
+        when(userRepository.existsByLogin(userForm.getLogin())).thenReturn(false);
+        userService.addNewUser(userAdmin.getUuid(), userForm);
+
+        //When & Then
+        verify(userRepository, times(1)).save(UserMapper.mapToUser(userForm));
     }
 }

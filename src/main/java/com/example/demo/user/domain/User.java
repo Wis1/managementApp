@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -46,4 +47,17 @@ public class User {
     private String email;
     @Column(name = "salary_per_hour", nullable = false)
     private Integer salaryPerHour;
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof final User user)) return false;
+
+        return Objects.equals(uuid, user.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid != null ? uuid.hashCode() : 0;
+    }
 }

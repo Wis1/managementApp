@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -21,5 +22,16 @@ public class UserDto {
     private final String email;
     private final int salaryPerHour;
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof final UserDto userDto)) return false;
 
+        return Objects.equals(uuid, userDto.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid != null ? uuid.hashCode() : 0;
+    }
 }

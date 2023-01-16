@@ -71,7 +71,7 @@ public class UserService {
 
     }
 
-    public List<UserDto> filterByCriteria(UUID uuid, UserSearch userSearch){
+    public List<UserDto> filterByCriteria(UUID uuid, UserSearch userSearch) {
         checkUserExistsAndIsAdmin(uuid);
         return UserMapper.mapToListUserDto(userRepository.findAll(userSpecification.getUsers(userSearch)));
     }
