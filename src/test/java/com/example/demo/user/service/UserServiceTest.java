@@ -132,4 +132,17 @@ class UserServiceTest {
         //When & Then
         verify(userRepository, times(1)).save(UserMapper.mapToUser(userForm));
     }
+
+    @Test
+    void shouldDeleteUserWhenDeleteUser() {
+
+        //Given
+        User user = InitUser.createUserManager();
+        User userAdmin = InitUser.createUserAdmin();
+        when(userRepository.findByUuid(userAdmin.getUuid())).thenReturn(Optional.of(userAdmin));
+        userService.deleteUser(userAdmin.getUuid(), user.getUuid());
+
+        //When & Then
+        verify(userRepository, times(1)).deleteByUuid(user.getUuid());
+    }
 }
