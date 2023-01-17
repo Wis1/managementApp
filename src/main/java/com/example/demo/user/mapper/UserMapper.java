@@ -3,6 +3,7 @@ package com.example.demo.user.mapper;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.dto.UserForm;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +51,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static List<UserDto> mapToListUserDto(final List<User> userList) {
+    public static List<UserDto> mapToListUserDto(final Page<UserDto> userList) {
         return userList.stream()
                 .map(u -> new UserDto(
                         u.getUuid(),
