@@ -3,6 +3,6 @@ package com.example.demo.exception;
 public class UserIsAlreadyExists extends RuntimeException {
     public UserIsAlreadyExists(String login) {
 
-        super("User with this login: " + login + " is already exists");
+        super (String.format("User with this login: %s is already exists", login));
     }
 }
