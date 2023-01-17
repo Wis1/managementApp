@@ -2,8 +2,9 @@ package com.example.demo.user.controller;
 
 import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.enums.UserRole;
+import com.example.demo.user.mapper.UserMapper;
+import com.example.demo.user.service.InitUser;
 import com.example.demo.user.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,7 +12,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,64 +28,53 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
-    private List<UserDto> userDtoList;
-
-    @BeforeEach
-    void createUserDtoList() {
-
-        this.userDtoList = List.of(
-                new UserDto(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "poul", "bulek", "korek", UserRole.ADMINISTRATOR, "PACH", "antyghin@gmail.com", 68),
-                new UserDto(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c45"), "poulsen", "bulek", "korek", UserRole.MANAGER, "PACH", "antyghin@gmail.com", 68),
-                new UserDto(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c88"), "poul", "bulek", "korek", UserRole.EMPLOYEE, "PACH", "antyghin@gmail.com", 68));
-    }
-
     @Test
     void shouldGetAllUsers() {
 
         //Given
-        when(userService.getAllUsers()).thenReturn(userDtoList);
+        List<UserDto> list = UserMapper.mapToListUserDto(InitUser.createUserList());
+        when(userService.getAllUsers()).thenReturn(list);
         //When
-        List<UserDto> userDtoList1 = userController.getAllUsers();
+        List<UserDto> userDtoList = userController.getAllUsers();
         //Then
-        assertEquals(userDtoList, userDtoList1);
-        assertEquals(userDtoList1.size(), 3);
+        assertEquals(list, userDtoList);
+        assertEquals(userDtoList.size(), 3);
     }
 
     @Test
     void shouldGetUserWithUuid() {
 
         //Given
-        UserDto userDto = new UserDto((UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33")), "poul", "bulek", "korek", UserRole.ADMINISTRATOR, "PACH", "antyghin@gmail.com", 68);
-        when(userService.getUser(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"))).thenReturn(userDto);
+        UserDto userAdmin = UserMapper.mapToUserDto(InitUser.createUserAdmin());
+        when(userService.getUser(userAdmin.getUuid())).thenReturn(userAdmin);
         //When
-        UserDto userDto1 = userController.getUser(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"));
-
+        UserDto userDto = userController.getUser(userAdmin.getUuid());
         //Then
-        assertEquals(userDto1, userDto);
-        assertEquals(userDto1.getUserRole(), UserRole.ADMINISTRATOR);
+        assertEquals(userDto, userAdmin);
+        assertEquals(userDto.getUserRole(), UserRole.ADMINISTRATOR);
     }
 
     @Test
     void shouldGetUserByExistLogin() {
 
         //Given
-        UserDto userDto = new UserDto((UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33")), "poul", "bulek", "korek", UserRole.ADMINISTRATOR, "PACH", "antyghin@gmail.com", 68);
-        when(userService.getUserByLogin((UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33")), "poul")).thenReturn(userDto);
+        UserDto userAdmin = UserMapper.mapToUserDto(InitUser.createUserAdmin());
+        when(userService.getUserByLogin(userAdmin.getUuid(), "poul")).thenReturn(userAdmin);
         //When
-        UserDto userDto1 = userController.getUserByLogin(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "poul");
+        UserDto userDto = userController.getUserByLogin(userAdmin.getUuid(), "poul");
         //Then
-        assertNotNull(userDto1);
+        assertNotNull(userDto);
     }
 
     @Test
     void shouldGetNullWhenGetByNotExistLogin() {
 
         //Given
-        UserDto userDto = new UserDto((UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33")), "poul", "bulek", "korek", UserRole.ADMINISTRATOR, "PACH", "antyghin@gmail.com", 68);
-        when(userService.getUserByLogin((UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33")), "poul")).thenReturn(userDto);
+        UserDto userAdmin = UserMapper.mapToUserDto(InitUser.createUserAdmin());
+        when(userService.getUserByLogin(userAdmin.getUuid(), "poul")).thenReturn(userAdmin);
         //When
-        UserDto userDto1 = userController.getUserByLogin(UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "pol");
+        UserDto userDto = userController.getUserByLogin(userAdmin.getUuid(), "pol");
         //Then
-        assertNull(userDto1);
+        assertNull(userDto);
     }
 }
