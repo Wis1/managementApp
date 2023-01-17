@@ -11,9 +11,14 @@ import com.example.demo.user.enums.UserRole;
 import com.example.demo.user.mapper.UserMapper;
 import com.example.demo.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,17 +26,11 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserSpecification userSpecification;
-
-
-    public List<UserDto> getAllUsers() {
-
-        return UserMapper.mapToListUserDto(userRepository.findAll());
-    }
 
     public UserDto getUser(UUID uuid) {
-
-        return UserMapper.mapToUserDto(userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException(uuid)));
+        return userRepository.findByUuid(uuid)
+                .map(UserMapper::mapToUserDto)
+                .orElseThrow(() -> new UserNotFoundException(uuid));
     }
 
     public void addNewUser(UUID uuid, UserForm userForm) {
@@ -53,16 +52,11 @@ public class UserService {
         userRepository.save(UserMapper.mapToUser(userForm));
     }
 
+    @Transactional
     public void deleteUser(UUID adminUuid, UUID userUUID) {
 
         checkUserExistsAndIsAdmin(adminUuid);
         userRepository.deleteByUuid(userUUID);
-    }
-
-    public UserDto getUserByLogin(UUID uuid, String login) {
-
-        checkUserExistsAndIsAdmin(uuid);
-        return UserMapper.mapToUserDto(userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login)));
     }
 
     public void checkLoginExists(String login) {
@@ -71,8 +65,11 @@ public class UserService {
 
     }
 
-    public List<UserDto> filterByCriteria(UUID uuid, UserSearch userSearch) {
+    public Page<UserDto> filterByCriteria(UUID uuid, UserSearch userSearch, final Integer pageNo, final Integer pageSize, final String sortBy) {
         checkUserExistsAndIsAdmin(uuid);
-        return UserMapper.mapToListUserDto(userRepository.findAll(userSpecification.getUsers(userSearch)));
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Specification<User> specification = new UserSpecification(userSearch);
+        Page<User> page = userRepository.findAll(specification, paging);
+        return page.map(UserMapper::mapToUserDto);
     }
 }

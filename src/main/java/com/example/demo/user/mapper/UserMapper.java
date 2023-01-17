@@ -3,8 +3,10 @@ package com.example.demo.user.mapper;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.dto.UserForm;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -38,6 +40,7 @@ public class UserMapper {
 
     public static User mapToUser(final UserForm userForm) {
         return User.builder()
+                .uuid(UUID.randomUUID())
                 .login(userForm.getLogin())
                 .lastname(userForm.getLastname())
                 .firstname(userForm.getFirstname())
