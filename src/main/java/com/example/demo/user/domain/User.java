@@ -14,11 +14,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 
 import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldNameConstants
 @Getter
 @Setter
 @Entity
@@ -45,5 +47,5 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
     @Column(name = "salary_per_hour", nullable = false)
-    private int salaryPerHour;
+    private Integer salaryPerHour;
 }
