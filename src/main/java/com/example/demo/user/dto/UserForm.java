@@ -23,7 +23,7 @@ public class UserForm {
     private String lastname;
     @NotBlank(message = "Firstname may not be blank")
     private String firstname;
-    @NotNull
+    @NotNull(message = "UserRole may be only: ADMINISTRATOR, MANAGER, EMPLOYEE")
     private UserRole userRole;
     @NotBlank(message = "Password may not be blank")
     private String password;

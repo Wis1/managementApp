@@ -4,7 +4,6 @@ import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserForm;
 import com.example.demo.user.enums.UserRole;
 
-import java.util.List;
 import java.util.UUID;
 
 public class InitUser {
@@ -49,12 +48,5 @@ public class InitUser {
                 .email("jackson@gmail.com")
                 .salaryPerHour(120)
                 .build();
-    }
-
-    public static List<User> createUserList() {
-        return List.of(
-                new User(1L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c33"), "poul", "bulek", "korek", UserRole.ADMINISTRATOR, "PACH", "antyghin@gmail.com", 68),
-                new User(2L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c45"), "poulsen", "bulek", "korek", UserRole.MANAGER, "PACH", "antyghin@gmail.com", 68),
-                new User(3L, UUID.fromString("110841e3-e6fb-4191-8fd8-5674a5107c88"), "poul", "bulek", "korek", UserRole.EMPLOYEE, "PACH", "antyghin@gmail.com", 50));
     }
 }

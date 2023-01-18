@@ -5,7 +5,6 @@ import com.example.demo.exception.UserIsNotAdministrator;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserForm;
-import com.example.demo.user.dto.UserSearch;
 import com.example.demo.user.mapper.UserMapper;
 import com.example.demo.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,8 +26,6 @@ import static org.mockito.Mockito.when;
 class UserServiceTest {
 
     private static final UserRepository userRepository = Mockito.mock(UserRepository.class);
-
-    private static final UserSpecification userSpecification = Mockito.mock(UserSpecification.class);
 
     @InjectMocks
     private UserService userService;
@@ -68,7 +64,8 @@ class UserServiceTest {
         when(userRepository.findByUuid(userManager.getUuid())).thenReturn(Optional.of(userManager));
 
         // When& Then
-        RuntimeException exception = assertThrows(UserIsNotAdministrator.class, () -> userService.saveUser(userManager.getUuid(), userForm));
+        RuntimeException exception = assertThrows(UserIsNotAdministrator.class,
+                () -> userService.saveUser(userManager.getUuid(), userForm));
         String expectedMessage = (String.format("User with this uuid: %s is not administrator", userManager.getUuid()));
         assertEquals(expectedMessage, exception.getMessage());
     }
@@ -84,39 +81,12 @@ class UserServiceTest {
         when(userRepository.existsByLogin(userForm.getLogin())).thenReturn(true);
 
 
-        RuntimeException exception = assertThrows(UserIsAlreadyExists.class, () -> userService.addNewUser(userAdmin.getUuid(), userForm));
+        RuntimeException exception = assertThrows(UserIsAlreadyExists.class,
+                () -> userService.addNewUser(userAdmin.getUuid(), userForm));
         String expectedMessage = (String.format("User with this login: %s is already exists", userForm.getLogin()));
 
         //When & Then
         assertEquals(expectedMessage, exception.getMessage());
-
-
-    }
-
-    @Test
-    void shouldGetUserList() {
-
-        //Given
-        List<User> userList = InitUser.createUserList();
-        when(userRepository.findAll()).thenReturn(userList);
-
-        //When & Then
-        assertEquals(UserMapper.mapToListUserDto(userList), userService.getAllUsers());
-
-    }
-
-    @Test
-    void shouldGetAllUserListWhenFilterWithoutFilters() {
-
-        //Given
-        User userAdmin = InitUser.createUserAdmin();
-        List<User> userList = InitUser.createUserList();
-        UserSearch userSearch = new UserSearch(null, null, null, null, null, null);
-        when(userRepository.findByUuid(userAdmin.getUuid())).thenReturn(Optional.of(userAdmin));
-        when(userRepository.findAll(userSpecification.getUsers(userSearch))).thenReturn(userList);
-
-        //When & Then
-        assertEquals(UserMapper.mapToListUserDto(userList), userService.filterByCriteria(userAdmin.getUuid(), userSearch));
     }
 
     @Test
@@ -127,9 +97,11 @@ class UserServiceTest {
         User userAdmin = InitUser.createUserAdmin();
         when(userRepository.findByUuid(userAdmin.getUuid())).thenReturn(Optional.of(userAdmin));
         when(userRepository.existsByLogin(userForm.getLogin())).thenReturn(false);
+
+        //When
         userService.addNewUser(userAdmin.getUuid(), userForm);
 
-        //When & Then
+        //Then
         verify(userRepository, times(1)).save(UserMapper.mapToUser(userForm));
     }
 

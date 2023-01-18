@@ -35,27 +35,28 @@ public class UserService {
 
     public void addNewUser(UUID uuid, UserForm userForm) {
 
-        checkUserExistsAndIsAdmin(uuid);
+        checkIsAdmin(uuid);
         checkLoginExists(userForm.getLogin());
         userRepository.save(UserMapper.mapToUser(userForm));
     }
 
-    public void checkUserExistsAndIsAdmin(UUID adminUuid) {
+    public void checkIsAdmin(UUID adminUuid) {
 
-        User user = userRepository.findByUuid(adminUuid).orElseThrow(() -> new UserNotFoundException(adminUuid));
-        if (!user.getUserRole().equals(UserRole.ADMINISTRATOR)) throw new UserIsNotAdministrator(adminUuid);
+        User user = userRepository.findByUuid(adminUuid)
+                .orElseThrow(() -> new UserNotFoundException(adminUuid));
+        if (!(UserRole.ADMINISTRATOR).equals(user.getUserRole())) throw new UserIsNotAdministrator(adminUuid);
     }
 
     public void saveUser(UUID uuid, UserForm userForm) {
 
-        checkUserExistsAndIsAdmin(uuid);
+        checkIsAdmin(uuid);
         userRepository.save(UserMapper.mapToUser(userForm));
     }
 
     @Transactional
     public void deleteUser(UUID adminUuid, UUID userUUID) {
 
-        checkUserExistsAndIsAdmin(adminUuid);
+        checkIsAdmin(adminUuid);
         userRepository.deleteByUuid(userUUID);
     }
 
@@ -66,7 +67,7 @@ public class UserService {
     }
 
     public Page<UserDto> filterByCriteria(UUID uuid, UserSearch userSearch, final Integer pageNo, final Integer pageSize, final String sortBy) {
-        checkUserExistsAndIsAdmin(uuid);
+        checkIsAdmin(uuid);
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         Specification<User> specification = new UserSpecification(userSearch);
         Page<User> page = userRepository.findAll(specification, paging);

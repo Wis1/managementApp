@@ -32,7 +32,8 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<UserDto> filterUserByCriteria(@RequestParam(name = "adminUuid") UUID adminUuid, UserSearch userSearch,
+    public Page<UserDto> filterUserByCriteria(@RequestParam(name = "adminUuid") UUID adminUuid,
+                                              UserSearch userSearch,
                                               @RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize,
                                               @RequestParam(required = false, defaultValue = "login") String sortBy) {
