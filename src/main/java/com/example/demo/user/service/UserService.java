@@ -33,6 +33,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(uuid));
     }
 
+    @Transactional
     public void addNewUser(UUID uuid, UserForm userForm) {
 
         checkIsAdmin(uuid);

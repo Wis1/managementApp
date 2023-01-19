@@ -1,13 +1,18 @@
 package com.example.demo.user.domain;
 
 
+import com.example.demo.project.domain.Project;
 import com.example.demo.user.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +21,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -29,9 +37,10 @@ import java.util.UUID;
 @Builder
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Builder.Default
     @Column(name = "uuid", unique = true, nullable = false)
     private UUID uuid = UUID.randomUUID();
     @Column(name = "login", unique = true, nullable = false)
@@ -49,6 +58,14 @@ public class User {
     private String email;
     @Column(name = "salary_per_hour", nullable = false)
     private Integer salaryPerHour;
+
+    @ManyToMany(mappedBy = "userList", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("userList")
+    private List<Project> projectList= new ArrayList<>();
+
+    public Long getId(Long id) {
+        return this.id= Optional.ofNullable(id).orElse(this.id);
+    }
 
     @Override
     public boolean equals(final Object o) {
