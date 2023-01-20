@@ -17,9 +17,9 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
 
     void deleteByUuid(UUID uuid);
 
-    Optional<User> findByLogin(String login);
-
     boolean existsByLogin(String login);
 
     List<User> findAll(Specification<User> spec);
+
+    Optional<User> findByUuidAndUserRole_Administrator(UUID userUuid);
 }

@@ -7,7 +7,6 @@ import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.dto.UserForm;
 import com.example.demo.user.dto.UserSearch;
-import com.example.demo.user.enums.UserRole;
 import com.example.demo.user.mapper.UserMapper;
 import com.example.demo.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,39 +34,34 @@ public class UserService {
 
     @Transactional
     public void addNewUser(UUID uuid, UserForm userForm) {
-
         checkIsAdmin(uuid);
         checkLoginExists(userForm.getLogin());
         userRepository.save(UserMapper.mapToUser(userForm));
     }
 
     public void checkIsAdmin(UUID adminUuid) {
-
-        User user = userRepository.findByUuid(adminUuid)
-                .orElseThrow(() -> new UserNotFoundException(adminUuid));
-        if (!(UserRole.ADMINISTRATOR).equals(user.getUserRole())) throw new UserIsNotAdministrator(adminUuid);
+        userRepository.findByUuidAndUserRole_Administrator(adminUuid)
+                .orElseThrow(() -> new UserIsNotAdministrator(adminUuid));
     }
 
     public void saveUser(UUID uuid, UserForm userForm) {
-
         checkIsAdmin(uuid);
         userRepository.save(UserMapper.mapToUser(userForm));
     }
 
     @Transactional
     public void deleteUser(UUID adminUuid, UUID userUUID) {
-
         checkIsAdmin(adminUuid);
         userRepository.deleteByUuid(userUUID);
     }
 
     public void checkLoginExists(String login) {
-
-        if (userRepository.existsByLogin(login)) throw new UserIsAlreadyExists(login);
-
+        if (userRepository.existsByLogin(login))
+            throw new UserIsAlreadyExists(login);
     }
 
-    public Page<UserDto> filterByCriteria(UUID uuid, UserSearch userSearch, final Integer pageNo, final Integer pageSize, final String sortBy) {
+    public Page<UserDto> filterByCriteria(UUID uuid, UserSearch userSearch, final Integer pageNo,
+                                          final Integer pageSize, final String sortBy) {
         checkIsAdmin(uuid);
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         Specification<User> specification = new UserSpecification(userSearch);

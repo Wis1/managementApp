@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +24,6 @@ import lombok.experimental.FieldNameConstants;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,27 +35,37 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Builder.Default
     @Column(name = "uuid", unique = true, nullable = false)
+    @EqualsAndHashCode.Include
     private UUID uuid = UUID.randomUUID();
+
     @Column(name = "login", unique = true, nullable = false)
     private String login;
+
     @Column(name = "lastname", nullable = false)
     private String lastname;
+
     @Column(name = "firstname", nullable = false)
     private String firstname;
+
     @Column(name = "user_role", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
+
     @Column(name = "password", nullable = false)
     private String password;
+
     @Column(name = "email", nullable = false)
     private String email;
+
     @Column(name = "salary_per_hour", nullable = false)
     private Integer salaryPerHour;
 
@@ -67,16 +77,5 @@ public class User {
         return this.id= Optional.ofNullable(id).orElse(this.id);
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof final User user)) return false;
 
-        return Objects.equals(uuid, user.uuid);
-    }
-
-    @Override
-    public int hashCode() {
-        return uuid != null ? uuid.hashCode() : 0;
-    }
 }
