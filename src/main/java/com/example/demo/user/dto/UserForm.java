@@ -9,12 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class UserForm {
     @NotBlank(message = "Login may not be blank")
@@ -23,7 +21,7 @@ public class UserForm {
     private String lastname;
     @NotBlank(message = "Firstname may not be blank")
     private String firstname;
-    @NotNull
+    @NotNull(message = "UserRole may be only: ADMINISTRATOR, MANAGER, EMPLOYEE")
     private UserRole userRole;
     @NotBlank(message = "Password may not be blank")
     private String password;
