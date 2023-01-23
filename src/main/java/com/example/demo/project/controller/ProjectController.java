@@ -4,6 +4,7 @@ import com.example.demo.project.dto.ProjectDto;
 import com.example.demo.project.dto.ProjectForm;
 import com.example.demo.project.dto.ProjectSearch;
 import com.example.demo.project.service.ProjectService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +40,7 @@ public class ProjectController {
 
 
     @PostMapping
-    public void addNewProject(@RequestParam UUID uuid, @RequestBody ProjectForm projectForm) {
+    public void addNewProject(@RequestParam UUID uuid, @Valid @RequestBody ProjectForm projectForm) {
         projectService.addNewProject(uuid, projectForm);
     }
 
@@ -56,5 +57,7 @@ public class ProjectController {
                                       @PathVariable UUID projectUuid) {
         projectService.removeUserFromProject(uuid, userUuid, projectUuid);
     }
+
+
 
 }

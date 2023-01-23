@@ -34,7 +34,6 @@ public class ProjectService {
     public void addNewProject(final UUID uuid, final ProjectForm projectForm) {
 
         checkIsManagerOrAdministrator(uuid);
-
         projectRepository.save(ProjectMapper.mapToProject(projectForm));
     }
     private void checkIsManagerOrAdministrator(final UUID uuid) {
@@ -58,6 +57,8 @@ public class ProjectService {
 
         checkIsManagerOrAdministrator(uuid);
 
+
+
         Project project= projectRepository.findByUuid(projectUuid)
                 .orElseThrow(()->new ProjectNotFoundException(projectUuid));
 
@@ -67,8 +68,8 @@ public class ProjectService {
         projectRepository.findByUuidAndUserList(projectUuid,user)
                 .ifPresent(u->{ throw new UserIsAlreadyInProject(userUuid, projectUuid);});
 
-        project.addUser(user);
-        projectRepository.save(project);
+
+        project.addUsers(user);
     }
 
     public void removeUserFromProject(final UUID uuid, final UUID userUuid, final UUID projectUuid) {

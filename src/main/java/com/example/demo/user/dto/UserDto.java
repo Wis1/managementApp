@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -29,6 +30,6 @@ public class UserDto {
 
     private final String email;
 
-    private final int salaryPerHour;
+    private final BigDecimal salaryPerHour;
 
 }

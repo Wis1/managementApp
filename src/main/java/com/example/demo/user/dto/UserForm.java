@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -29,5 +31,5 @@ public class UserForm {
     @NotBlank(message = "Email may not be blank")
     private String email;
     @Positive
-    private int salaryPerHour;
+    private BigDecimal salaryPerHour;
 }

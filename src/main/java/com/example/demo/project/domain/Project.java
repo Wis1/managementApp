@@ -1,7 +1,9 @@
 package com.example.demo.project.domain;
 
+import com.example.demo.projectuser.domain.ProjectUsers;
+import com.example.demo.projectuser.domain.ProjectUsersId;
+import com.example.demo.timesheet.domain.Timesheet;
 import com.example.demo.user.domain.User;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,9 +14,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,10 +26,9 @@ import lombok.experimental.FieldNameConstants;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -36,6 +39,7 @@ import java.util.UUID;
 @Entity(name = "Projects")
 @Table(name = "projects")
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Project {
 
     @Id
@@ -45,6 +49,7 @@ public class Project {
 
     @Builder.Default
     @Column(name = "uuid", unique = true, nullable = false)
+    @EqualsAndHashCode.Include
     private UUID uuid = UUID.randomUUID();
 
     @Column(name = "name")
@@ -62,6 +67,12 @@ public class Project {
     @Column(name = "budget_project")
     private BigDecimal budgetProject;
 
+    @Column
+    private BigDecimal percentageBudgetUsed;
+
+    @Column(nullable = false)
+    private BigDecimal actualUsedBudget= BigDecimal.ZERO;
+
     @ManyToMany(cascade =
             {CascadeType.MERGE,
                     CascadeType.PERSIST},
@@ -69,8 +80,7 @@ public class Project {
     @JoinTable(name = "project_user",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonIgnoreProperties("projectList")
-    private List<User> userList = new ArrayList<>();
+    private Set<User> userList = new HashSet<>();
 
     public void addUser(User user) {
         userList.add(user);
@@ -82,20 +92,40 @@ public class Project {
         user.getProjectList().remove(this);
     }
 
-    public Long getId(Long id) {
-        return this.id= Optional.ofNullable(id).orElse(this.id);
+    @OneToMany(
+            mappedBy = "project",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Timesheet> timesheetSet= new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "project",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<ProjectUsers> users= new HashSet<>();
+
+    public void addUsers(User user) {
+        ProjectUsers projectUsers= new ProjectUsers(this, user);
+        projectUsers.setId(new ProjectUsersId(getId(), user.getId()));
+        projectUsers.setStartUserInProjectFrom(LocalDateTime.now());
+        projectUsers.setEndUserInProjectTo(LocalDateTime.now());
+        users.add(projectUsers);
+        user.getProjects().add(projectUsers);
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof final Project project)) return false;
+    public void removeUsers(User user) {
+        for (Iterator<ProjectUsers> iterator= users.iterator();
+        iterator.hasNext(); ) {
+            ProjectUsers projectUsers= iterator.next();
 
-        return Objects.equals(uuid, project.uuid);
-    }
-
-    @Override
-    public int hashCode() {
-        return uuid != null ? uuid.hashCode() : 0;
+            if (projectUsers.getProject().equals(this) && projectUsers.getUser().equals(user)) {
+                iterator.remove();
+                projectUsers.getUser().getProjects().remove(projectUsers);
+                projectUsers.setProject(null);
+                projectUsers.setUser(null);
+            }
+        }
     }
 }

@@ -3,7 +3,9 @@ package com.example.demo.project.mapper;
 import com.example.demo.project.domain.Project;
 import com.example.demo.project.dto.ProjectDto;
 import com.example.demo.project.dto.ProjectForm;
+import com.example.demo.user.mapper.UserMapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,8 @@ public class ProjectMapper {
                 .startProject(projectForm.getStartProject())
                 .endProject(projectForm.getEndProject())
                 .budgetProject(projectForm.getBudgetProject())
+                .actualUsedBudget(BigDecimal.ZERO)
+                .percentageBudgetUsed(BigDecimal.ZERO)
                 .build();
     }
 
@@ -27,7 +31,7 @@ public class ProjectMapper {
                 .startProject(project.getStartProject())
                 .endProject(project.getEndProject())
                 .budgetProject(project.getBudgetProject())
-                .userList(project.getUserList())
+                .userList(UserMapper.mapToListUserDto(project.getUserList()))
                 .build();
     }
 
@@ -40,7 +44,9 @@ public class ProjectMapper {
                         p.getStartProject(),
                         p.getEndProject(),
                         p.getBudgetProject(),
-                        p.getUserList()
+                        p.getUserList().stream()
+                                .map(UserMapper::mapToUserDto)
+                                .collect(Collectors.toSet())
                 ))
                 .collect(Collectors.toList());
     }

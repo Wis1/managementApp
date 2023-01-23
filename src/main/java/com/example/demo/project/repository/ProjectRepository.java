@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, UUID>, JpaSpecificationExecutor<Project> {
+
     @EntityGraph(attributePaths = {"userList"})
     Optional<Project> findByUuid(UUID projectUuid);
 
@@ -25,5 +26,6 @@ public interface ProjectRepository extends JpaRepository<Project, UUID>, JpaSpec
 
     @EntityGraph(attributePaths = {"userList"})
     Optional<Project> findByUuidAndUserList(UUID projectUuid, User user);
+
 
 }

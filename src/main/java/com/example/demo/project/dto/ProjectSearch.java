@@ -24,4 +24,6 @@ public class ProjectSearch {
     private LocalDateTime endProject;
 
     private List<UUID> userUuidList;
+
+    private Boolean overBudget;
 }
