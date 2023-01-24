@@ -37,17 +37,17 @@ public class ProjectMapper {
 
     public static List<ProjectDto> mapToProjectListDto(final List<Project> userList) {
         return userList.stream()
-                .map(p -> new ProjectDto(
-                        p.getUuid(),
-                        p.getName(),
-                        p.getDescription(),
-                        p.getStartProject(),
-                        p.getEndProject(),
-                        p.getBudgetProject(),
-                        p.getUserList().stream()
+                .map(p -> ProjectDto.builder()
+                        .uuid(p.getUuid())
+                        .name(p.getName())
+                        .description(p.getDescription())
+                        .startProject(p.getStartProject())
+                        .endProject(p.getEndProject())
+                        .budgetProject(p.getBudgetProject())
+                        .userList(p.getUserList().stream()
                                 .map(UserMapper::mapToUserDto)
-                                .collect(Collectors.toSet())
-                ))
+                                .collect(Collectors.toSet()))
+                        .build())
                 .collect(Collectors.toList());
     }
 }

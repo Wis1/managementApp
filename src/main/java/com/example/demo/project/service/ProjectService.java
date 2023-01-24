@@ -36,7 +36,7 @@ public class ProjectService {
         checkIsManagerOrAdministrator(uuid);
         projectRepository.save(ProjectMapper.mapToProject(projectForm));
     }
-    private void checkIsManagerOrAdministrator(final UUID uuid) {
+    public void checkIsManagerOrAdministrator(final UUID uuid) {
 
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(() -> new UserNotFoundException(uuid));
@@ -94,5 +94,11 @@ public class ProjectService {
         Page<Project> page= projectRepository.findAll(specification, paging);
 
         return page.map(ProjectMapper::mapToProjectDto);
+    }
+
+    @Transactional
+    public void removeProject(final UUID uuid, final UUID projectUuid) {
+        checkIsManagerOrAdministrator(uuid);
+        projectRepository.deleteByUuid(projectUuid);
     }
 }

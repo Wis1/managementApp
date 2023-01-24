@@ -15,10 +15,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@FieldNameConstants
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

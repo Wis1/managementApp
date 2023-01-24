@@ -58,6 +58,11 @@ public class ProjectController {
         projectService.removeUserFromProject(uuid, userUuid, projectUuid);
     }
 
+    @DeleteMapping("/projects/{projectUuid}")
+    public void deleteProject(@RequestParam UUID uuid, @PathVariable UUID projectUuid) {
+        projectService.removeProject(uuid, projectUuid);
+    }
+
 
 
 }

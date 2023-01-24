@@ -3,7 +3,6 @@ package com.example.demo.project.dto;
 import com.example.demo.user.dto.UserDto;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @Getter
-@RequiredArgsConstructor
 @Builder
 public class ProjectDto {
 

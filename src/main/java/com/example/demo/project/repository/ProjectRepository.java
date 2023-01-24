@@ -27,5 +27,5 @@ public interface ProjectRepository extends JpaRepository<Project, UUID>, JpaSpec
     @EntityGraph(attributePaths = {"userList"})
     Optional<Project> findByUuidAndUserList(UUID projectUuid, User user);
 
-
+    void deleteByUuid(UUID projectUuid);
 }

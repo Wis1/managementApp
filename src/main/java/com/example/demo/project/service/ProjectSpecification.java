@@ -2,6 +2,7 @@ package com.example.demo.project.service;
 
 import com.example.demo.project.domain.Project;
 import com.example.demo.project.dto.ProjectSearch;
+import com.example.demo.projectuser.domain.ProjectUsers;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -40,17 +41,20 @@ public class ProjectSpecification implements Specification<Project> {
                     projectSearch.getEndProject()));
         }
         if (!ObjectUtils.isEmpty(projectSearch.getUserUuidList())) {
-            projectSearch.getUserUuidList().forEach(uuid -> predicates.add(
-                    criteriaBuilder.isTrue(
-                            root.join(Project.Fields.userList).get(User.Fields.uuid)
-                                    .in(uuid)
-                    )
-            ));
-            predicates.add(criteriaBuilder.isTrue(root.get(Project.Fields.userList).get(Project.Fields.uuid)
-                    .in(projectSearch.getUserUuidList())));
+            projectSearch.getUserUuidList().forEach(uuid -> {
+                predicates.add(
+                        criteriaBuilder.isTrue(
+                                root.join(Project.Fields.users).get(ProjectUsers.Fields.user).get(User.Fields.uuid)
+                                        .in(uuid)
+                        )
+                );
+            });
         }
-        if(!ObjectUtils.isEmpty(projectSearch.getOverBudget())) {
+        if(projectSearch.getOverBudget()!=null&&!projectSearch.getOverBudget()) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(Project.Fields.percentageBudgetUsed), 100));
+        }
+        if(projectSearch.getOverBudget()!=null&&projectSearch.getOverBudget()) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(Project.Fields.percentageBudgetUsed), 100));
         }
 
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));

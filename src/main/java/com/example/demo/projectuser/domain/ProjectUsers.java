@@ -9,11 +9,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
+@FieldNameConstants
 @Entity(name = "Project_users")
 @Table(name = "project_users")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -32,7 +32,7 @@ public class ProjectUsers {
     private ProjectUsersId id;
 
     @EqualsAndHashCode.Include
-    private UUID uuid;
+    private UUID uuid=UUID.randomUUID();
 
     private LocalDateTime startUserInProjectFrom;
 

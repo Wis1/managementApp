@@ -30,6 +30,5 @@ public class TimesheetMapper {
         return timesheetList.stream()
                 .map(TimesheetMapper::mapToTimesheetDto)
                 .collect(Collectors.toList());
-
     }
 }
