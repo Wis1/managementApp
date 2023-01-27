@@ -6,10 +6,10 @@ import com.example.demo.timesheet.dto.TimesheetSearch;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.ObjectUtils;
-import jakarta.persistence.criteria.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class TimesheetSpecification implements Specification<Timesheet> {
     public Timesheet timesheet;
 
     public TimesheetSpecification(final TimesheetSearch timesheetSearch) {
-        this.timesheetSearch= timesheetSearch;
+        this.timesheetSearch = timesheetSearch;
     }
 
     @Override
@@ -33,20 +33,16 @@ public class TimesheetSpecification implements Specification<Timesheet> {
         }
 
         if (!ObjectUtils.isEmpty(timesheetSearch.getUserFirstname())) {
-            predicates.add(criteriaBuilder.like(root.get(Timesheet.Fields.projectUsers).get(ProjectUsers.Fields.user).get(User.Fields.firstname), "%"+ timesheetSearch.getUserFirstname().toLowerCase()+"%"));
+            predicates.add(criteriaBuilder.like(root.get(Timesheet.Fields.projectUsers).get(ProjectUsers.Fields.user).get(User.Fields.firstname), "%" + timesheetSearch.getUserFirstname().toLowerCase() + "%"));
         }
 
         if (!ObjectUtils.isEmpty(timesheetSearch.getUserLastname())) {
-            predicates.add(criteriaBuilder.like(root.get(Timesheet.Fields.projectUsers).get(ProjectUsers.Fields.user).get(User.Fields.lastname), "%"+ timesheetSearch.getUserLastname().toLowerCase()+"%"));
+            predicates.add(criteriaBuilder.like(root.get(Timesheet.Fields.projectUsers).get(ProjectUsers.Fields.user).get(User.Fields.lastname), "%" + timesheetSearch.getUserLastname().toLowerCase() + "%"));
         }
 
-        if (!ObjectUtils.isEmpty(timesheetSearch.getTimeFrom())) {
+        if (timesheetSearch.getTimeFrom() != null) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(Timesheet.Fields.startUserInProject), timesheetSearch.getTimeFrom()));
         }
-
-
-
-
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
     }
 }

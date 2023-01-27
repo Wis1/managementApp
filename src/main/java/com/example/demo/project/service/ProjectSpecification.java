@@ -20,17 +20,17 @@ public class ProjectSpecification implements Specification<Project> {
     public Project project;
 
     public ProjectSpecification(final ProjectSearch projectSearch) {
-        this.projectSearch= projectSearch;
+        this.projectSearch = projectSearch;
     }
 
     @Override
     public Predicate toPredicate(final Root<Project> root, final CriteriaQuery<?> query, final CriteriaBuilder criteriaBuilder) {
 
-        List<Predicate> predicates= new ArrayList<>();
+        List<Predicate> predicates = new ArrayList<>();
 
         if (!ObjectUtils.isEmpty(projectSearch.getName())) {
-            predicates.add(criteriaBuilder.like(root.get(Project.Fields.name),
-                    "%"+projectSearch.getName().toLowerCase()+"%"));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(Project.Fields.name)),
+                    "%" + projectSearch.getName().toLowerCase() + "%"));
         }
         if (!ObjectUtils.isEmpty(projectSearch.getStartProject())) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(Project.Fields.startProject),
@@ -50,13 +50,12 @@ public class ProjectSpecification implements Specification<Project> {
                 );
             });
         }
-        if(projectSearch.getOverBudget()!=null&&!projectSearch.getOverBudget()) {
+        if (projectSearch.getOverBudget() != null && !projectSearch.getOverBudget()) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(Project.Fields.percentageBudgetUsed), 100));
         }
-        if(projectSearch.getOverBudget()!=null&&projectSearch.getOverBudget()) {
+        if (projectSearch.getOverBudget() != null && projectSearch.getOverBudget()) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(Project.Fields.percentageBudgetUsed), 100));
         }
-
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
     }
 }

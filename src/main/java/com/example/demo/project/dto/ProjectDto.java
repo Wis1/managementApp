@@ -14,17 +14,10 @@ import java.util.UUID;
 public class ProjectDto {
 
     private final UUID uuid;
-
     private final String name;
-
     private final String description;
-
     private final LocalDateTime startProject;
-
     private final LocalDateTime endProject;
-
     private final BigDecimal budgetProject;
-
     private final Set<UserDto> userList;
-
 }

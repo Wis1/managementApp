@@ -4,11 +4,8 @@ import com.example.demo.timesheet.domain.Timesheet;
 import com.example.demo.timesheet.dto.TimesheetDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TimesheetMapper {
-
-
     public static TimesheetDto mapToTimesheetDto(final Timesheet timesheet) {
 
         return TimesheetDto.builder()
@@ -25,10 +22,10 @@ public class TimesheetMapper {
                 .build();
     }
 
-    public static List<TimesheetDto> mapToListTimesheetDto(final List<Timesheet> timesheetList) {
+    public static List<TimesheetDto> mapToListTimesheetDto(final List<Timesheet> timesheets) {
 
-        return timesheetList.stream()
+        return timesheets.stream()
                 .map(TimesheetMapper::mapToTimesheetDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

@@ -37,7 +37,7 @@ public class Timesheet {
 
     @Column(name = "uuid", unique = true, nullable = false)
     @EqualsAndHashCode.Include
-    private UUID uuid=UUID.randomUUID();
+    private UUID uuid = UUID.randomUUID();
 
     @Column(name = "start_user_in_project")
     private LocalDateTime startUserInProject;
@@ -53,5 +53,4 @@ public class Timesheet {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ProjectUsers projectUsers;
-
 }

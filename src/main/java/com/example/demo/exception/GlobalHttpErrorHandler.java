@@ -60,9 +60,9 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(UserOrProjectNotFoundException.class)
+    @ExceptionHandler(UserIsNotConnectWithProjectException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String userOrProjectNotFoundExceptionHandler(UserOrProjectNotFoundException exception) {
+    public String userOrProjectNotFoundExceptionHandler(UserIsNotConnectWithProjectException exception) {
         return exception.getMessage();
     }
 

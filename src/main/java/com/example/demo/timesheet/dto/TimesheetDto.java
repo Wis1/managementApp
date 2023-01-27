@@ -11,24 +11,13 @@ import java.util.UUID;
 public class TimesheetDto {
 
     private final UUID timesheetUuid;
-
     private final LocalDateTime startUserInProject;
-
     private final LocalDateTime endUserInProject;
-
     private final UUID projectUuid;
-
     private final String nameProject;
-
     private final LocalDateTime startProject;
-
     private final LocalDateTime endProject;
-
     private final UUID userUuid;
-
     private final String lastname;
-
     private final String firstname;
-
-
 }

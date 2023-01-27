@@ -3,8 +3,8 @@ package com.example.demo.timesheet.service;
 import com.example.demo.exception.ProjectNotFoundException;
 import com.example.demo.exception.TimesheetIsAlreadyExistInThisTimeException;
 import com.example.demo.exception.TimesheetIsNotFoundException;
+import com.example.demo.exception.UserIsNotConnectWithProjectException;
 import com.example.demo.exception.UserNotFoundException;
-import com.example.demo.exception.UserOrProjectNotFoundException;
 import com.example.demo.project.domain.Project;
 import com.example.demo.project.repository.ProjectRepository;
 import com.example.demo.project.service.ProjectService;
@@ -53,7 +53,7 @@ public class TimesheetService {
         Timesheet timesheet = new Timesheet();
 
         ProjectUsers projectUsers = projectUsersRepository.findByProjectIdAndUserId(project.getId(), user.getId())
-                .orElseThrow(UserOrProjectNotFoundException::new);
+                .orElseThrow(() -> new UserIsNotConnectWithProjectException(user.getUuid(), project.getUuid()));
 
         timesheet.setProjectUsers(projectUsers);
 
@@ -66,10 +66,8 @@ public class TimesheetService {
             throw new TimesheetIsAlreadyExistInThisTimeException();
         }
         timesheetRepository.save(timesheet);
-
         updateActualUsedBudgetAndPercentageBudgetUsed(project.getUuid(),
-                calculateCostOfWorkingTime(user, timesheet),"add");
-
+                calculateCostOfWorkingTime(user, timesheet), "add");
     }
 
     public List<TimesheetDto> getTimesheetForUser(UUID userUuid) {
@@ -78,6 +76,16 @@ public class TimesheetService {
 
         List<ProjectUsers> projectUsers = projectUsersRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new UserNotFoundException(userUuid));
+
+        return TimesheetMapper.mapToListTimesheetDto(timesheetRepository.findByProjectUsersIn(projectUsers));
+    }
+
+    public List<TimesheetDto> getTimesheetForProject(UUID projectUuid) {
+        Project project = projectRepository.findByUuid(projectUuid)
+                .orElseThrow(() -> new ProjectNotFoundException(projectUuid));
+
+        List<ProjectUsers> projectUsers = projectUsersRepository.findByProjectId(project.getId())
+                .orElseThrow(() -> new ProjectNotFoundException(projectUuid));
 
         return TimesheetMapper.mapToListTimesheetDto(timesheetRepository.findByProjectUsersIn(projectUsers));
     }
@@ -99,10 +107,10 @@ public class TimesheetService {
                 project.setPercentageBudgetUsed(project.getActualUsedBudget().multiply(new BigDecimal(100))
                         .divide(project.getBudgetProject(), 2, RoundingMode.HALF_UP));
             }
-            case "add"-> {
+            case "add" -> {
                 project.setActualUsedBudget(project.getActualUsedBudget().add(changesAmount));
                 project.setPercentageBudgetUsed(project.getActualUsedBudget().multiply(new BigDecimal(100))
-                        .divide(project.getBudgetProject(),2, RoundingMode.HALF_UP));
+                        .divide(project.getBudgetProject(), 2, RoundingMode.HALF_UP));
             }
         }
     }
@@ -127,13 +135,11 @@ public class TimesheetService {
         }
         updateActualUsedBudgetAndPercentageBudgetUsed(timesheet.getProjectUsers().getProject().getUuid(),
                 calculateCostOfWorkingTime(timesheet.getProjectUsers().getUser(), timesheet), "add");
-
-
         timesheetRepository.save(timesheet);
     }
 
     @Transactional
-    public void deleteTimesheet(final UUID uuid){
+    public void deleteTimesheet(final UUID uuid) {
         Timesheet timesheet = timesheetRepository.findByUuid(uuid).orElseThrow(
                 () -> new TimesheetIsNotFoundException(uuid));
 
@@ -144,9 +150,9 @@ public class TimesheetService {
 
     public Page<TimesheetDto> filterByCriteria(UUID uuid, TimesheetSearch timesheetSearch) {
         projectService.checkIsManagerOrAdministrator(uuid);
-        Pageable paging= PageRequest.of(0,10);
-        Specification<Timesheet> specification= new TimesheetSpecification(timesheetSearch);
-        Page<Timesheet> page= timesheetRepository.findAll(specification, paging);
+        Pageable paging = PageRequest.of(0, 10);
+        Specification<Timesheet> specification = new TimesheetSpecification(timesheetSearch);
+        Page<Timesheet> page = timesheetRepository.findAll(specification, paging);
 
         return page.map(TimesheetMapper::mapToTimesheetDto);
     }

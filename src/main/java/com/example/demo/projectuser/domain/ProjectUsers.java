@@ -32,11 +32,11 @@ public class ProjectUsers {
     private ProjectUsersId id;
 
     @EqualsAndHashCode.Include
-    private UUID uuid=UUID.randomUUID();
+    private UUID uuid = UUID.randomUUID();
 
-    private LocalDateTime startUserInProjectFrom;
+    private LocalDateTime startUserInProjectFrom = LocalDateTime.now();
 
-    private LocalDateTime endUserInProjectTo;
+    private LocalDateTime endUserInProjectTo = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
@@ -47,11 +47,8 @@ public class ProjectUsers {
     private Project project;
 
     public ProjectUsers(Project project, User user) {
-        this.project= project;
-        this.user= user;
-        this.id= new ProjectUsersId(project.getId(), user.getId());
+        this.project = project;
+        this.user = user;
+        this.id = new ProjectUsersId(project.getId(), user.getId());
     }
-
-
-
 }

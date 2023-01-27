@@ -38,7 +38,6 @@ public class ProjectController {
         return projectService.filterByCriteria(uuid, projectSearch);
     }
 
-
     @PostMapping
     public void addNewProject(@RequestParam UUID uuid, @Valid @RequestBody ProjectForm projectForm) {
         projectService.addNewProject(uuid, projectForm);
@@ -62,7 +61,4 @@ public class ProjectController {
     public void deleteProject(@RequestParam UUID uuid, @PathVariable UUID projectUuid) {
         projectService.removeProject(uuid, projectUuid);
     }
-
-
-
 }

@@ -6,7 +6,8 @@ import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.dto.UserForm;
 
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 
 public class UserMapper {
@@ -49,8 +50,8 @@ public class UserMapper {
                 .build();
     }
 
-    public static Set<UserDto> mapToListUserDto(final Set<User> userList) {
-        return userList.stream()
+    public static Set<UserDto> mapToListUserDto(final Set<User> users) {
+        return users.stream()
                 .map(u -> new UserDto(
                         u.getUuid(),
                         u.getLogin(),
@@ -61,11 +62,10 @@ public class UserMapper {
                         u.getEmail(),
                         u.getSalaryPerHour()
                 ))
-                .collect(Collectors.toSet());
+                .collect(toSet());
     }
 
     public static Set<User> mapToSetUser(final Set<ProjectUsers> projectUsers) {
-        return projectUsers.stream().map(ProjectUsers::getUser).collect(Collectors.toSet());
+        return projectUsers.stream().map(ProjectUsers::getUser).collect(toSet());
     }
-
 }

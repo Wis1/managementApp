@@ -1,7 +1,6 @@
 package com.example.demo.project.domain;
 
 import com.example.demo.projectuser.domain.ProjectUsers;
-import com.example.demo.projectuser.domain.ProjectUsersId;
 import com.example.demo.timesheet.domain.Timesheet;
 import com.example.demo.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -71,7 +70,7 @@ public class Project {
     private BigDecimal percentageBudgetUsed;
 
     @Column(nullable = false)
-    private BigDecimal actualUsedBudget= BigDecimal.ZERO;
+    private BigDecimal actualUsedBudget = BigDecimal.ZERO;
 
     @ManyToMany(cascade =
             {CascadeType.MERGE,
@@ -97,28 +96,24 @@ public class Project {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<Timesheet> timesheetSet= new HashSet<>();
+    private Set<Timesheet> timesheetSet = new HashSet<>();
 
     @OneToMany(
             mappedBy = "project",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<ProjectUsers> users= new HashSet<>();
+    private Set<ProjectUsers> users = new HashSet<>();
 
     public void addUsers(User user) {
-        ProjectUsers projectUsers= new ProjectUsers(this, user);
-        projectUsers.setId(new ProjectUsersId(getId(), user.getId()));
-        projectUsers.setStartUserInProjectFrom(LocalDateTime.now());
-        projectUsers.setEndUserInProjectTo(LocalDateTime.now());
+        ProjectUsers projectUsers = new ProjectUsers(this, user);
         users.add(projectUsers);
         user.getProjects().add(projectUsers);
     }
 
     public void removeUsers(User user) {
-        for (Iterator<ProjectUsers> iterator= users.iterator();
-        iterator.hasNext(); ) {
-            ProjectUsers projectUsers= iterator.next();
+        for (Iterator<ProjectUsers> iterator = users.iterator(); iterator.hasNext(); ) {
+            ProjectUsers projectUsers = iterator.next();
 
             if (projectUsers.getProject().equals(this) && projectUsers.getUser().equals(user)) {
                 iterator.remove();

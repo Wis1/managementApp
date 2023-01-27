@@ -16,12 +16,8 @@ import java.util.UUID;
 public class ProjectSearch {
 
     private String name;
-
     private LocalDateTime startProject;
-
     private LocalDateTime endProject;
-
     private List<UUID> userUuidList;
-
     private Boolean overBudget;
 }

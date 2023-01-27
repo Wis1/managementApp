@@ -36,12 +36,13 @@ public class ProjectService {
         checkIsManagerOrAdministrator(uuid);
         projectRepository.save(ProjectMapper.mapToProject(projectForm));
     }
+
     public void checkIsManagerOrAdministrator(final UUID uuid) {
 
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(() -> new UserNotFoundException(uuid));
 
-        if (!((UserRole.MANAGER).equals(user.getUserRole())||UserRole.ADMINISTRATOR.equals(user.getUserRole())))
+        if (!((UserRole.MANAGER).equals(user.getUserRole()) || UserRole.ADMINISTRATOR.equals(user.getUserRole())))
             throw new UserIsNotManager(uuid);
     }
 
@@ -58,15 +59,16 @@ public class ProjectService {
         checkIsManagerOrAdministrator(uuid);
 
 
+        Project project = projectRepository.findByUuid(projectUuid)
+                .orElseThrow(() -> new ProjectNotFoundException(projectUuid));
 
-        Project project= projectRepository.findByUuid(projectUuid)
-                .orElseThrow(()->new ProjectNotFoundException(projectUuid));
-
-        User user=userRepository.findByUuid(userUuid)
+        User user = userRepository.findByUuid(userUuid)
                 .orElseThrow(() -> new UserNotFoundException(userUuid));
 
-        projectRepository.findByUuidAndUserList(projectUuid,user)
-                .ifPresent(u->{ throw new UserIsAlreadyInProject(userUuid, projectUuid);});
+        projectRepository.findByUuidAndUserList(projectUuid, user)
+                .ifPresent(u -> {
+                    throw new UserIsAlreadyInProject(userUuid, projectUuid);
+                });
 
 
         project.addUsers(user);
@@ -75,13 +77,13 @@ public class ProjectService {
     public void removeUserFromProject(final UUID uuid, final UUID userUuid, final UUID projectUuid) {
         checkIsManagerOrAdministrator(uuid);
 
-        Project project= projectRepository.findByUuid(projectUuid)
-                .orElseThrow(()->new ProjectNotFoundException(projectUuid));
+        Project project = projectRepository.findByUuid(projectUuid)
+                .orElseThrow(() -> new ProjectNotFoundException(projectUuid));
 
-        User user= userRepository.findByUuid(userUuid)
-                .orElseThrow(()->new UserNotFoundException(userUuid));
+        User user = userRepository.findByUuid(userUuid)
+                .orElseThrow(() -> new UserNotFoundException(userUuid));
 
-        project.removeUser(user);
+        project.removeUsers(user);
         projectRepository.save(project);
     }
 
@@ -89,9 +91,9 @@ public class ProjectService {
 
         checkIsManagerOrAdministrator(uuid);
 
-        Pageable paging= PageRequest.of(0,10);
-        Specification<Project> specification= new ProjectSpecification(projectSearch);
-        Page<Project> page= projectRepository.findAll(specification, paging);
+        Pageable paging = PageRequest.of(0, 10);
+        Specification<Project> specification = new ProjectSpecification(projectSearch);
+        Page<Project> page = projectRepository.findAll(specification, paging);
 
         return page.map(ProjectMapper::mapToProjectDto);
     }

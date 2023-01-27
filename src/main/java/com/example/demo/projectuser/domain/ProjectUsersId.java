@@ -19,8 +19,7 @@ public class ProjectUsersId implements Serializable {
     private Long userId;
 
     public ProjectUsersId(Long projectId, Long userId) {
-        this.projectId= projectId;
-        this.userId= userId;
+        this.projectId = projectId;
+        this.userId = userId;
     }
-
 }

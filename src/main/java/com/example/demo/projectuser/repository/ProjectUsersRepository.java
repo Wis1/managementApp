@@ -13,4 +13,6 @@ public interface ProjectUsersRepository extends JpaRepository<ProjectUsers, Long
     Optional<ProjectUsers> findByProjectIdAndUserId(Long projectId, Long userId);
 
     Optional<List<ProjectUsers>> findByUserId(Long userId);
+
+    Optional<List<ProjectUsers>> findByProjectId(Long projectId);
 }

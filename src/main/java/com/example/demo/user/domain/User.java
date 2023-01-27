@@ -97,6 +97,4 @@ public class User {
             orphanRemoval = true
     )
     private Set<ProjectUsers> projects = new HashSet<>();
-
-
 }

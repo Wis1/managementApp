@@ -7,9 +7,11 @@ import com.example.demo.user.mapper.UserMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 public class ProjectMapper {
+
 
     public static Project mapToProject(final ProjectForm projectForm) {
         return Project.builder()
@@ -35,8 +37,8 @@ public class ProjectMapper {
                 .build();
     }
 
-    public static List<ProjectDto> mapToProjectListDto(final List<Project> userList) {
-        return userList.stream()
+    public static List<ProjectDto> mapToProjectListDto(final List<Project> projects) {
+        return projects.stream()
                 .map(p -> ProjectDto.builder()
                         .uuid(p.getUuid())
                         .name(p.getName())
@@ -46,8 +48,8 @@ public class ProjectMapper {
                         .budgetProject(p.getBudgetProject())
                         .userList(p.getUserList().stream()
                                 .map(UserMapper::mapToUserDto)
-                                .collect(Collectors.toSet()))
+                                .collect(toSet()))
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 }

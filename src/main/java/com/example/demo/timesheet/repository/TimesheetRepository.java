@@ -22,9 +22,9 @@ public interface TimesheetRepository extends JpaRepository<Timesheet, Long> {
 
     @EntityGraph(attributePaths = "projectUsers")
     @Query("""
-        SELECT (COUNT(t) > 0) FROM Timesheet t
-        WHERE (t.endUserInProject > ?1 AND t.endUserInProject <= ?2) OR (t.startUserInProject >= ?1 AND t.startUserInProject < ?2)
-          OR (t.startUserInProject < ?1 AND t.endUserInProject > ?2) AND t.projectUsers.user.uuid = ?3""")
+            SELECT (COUNT(t) > 0) FROM Timesheet t
+            WHERE (t.endUserInProject > ?1 AND t.endUserInProject <= ?2) OR (t.startUserInProject >= ?1 AND t.startUserInProject < ?2)
+              OR (t.startUserInProject < ?1 AND t.endUserInProject > ?2) AND t.projectUsers.user.uuid = ?3""")
     boolean existTimeRecordBetweenDateTime(LocalDateTime startTime, LocalDateTime endTime, UUID userUuid);
 
     Optional<Timesheet> findByUuid(UUID uuid);

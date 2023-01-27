@@ -23,7 +23,7 @@ public class ProjectForm {
     @NotBlank(message = "name cannot be empty")
     private String name;
 
-    private String description="";
+    private String description = "";
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
