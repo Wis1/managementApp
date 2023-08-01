@@ -3,13 +3,7 @@ package com.example.demo.timesheet.domain;
 import com.example.demo.project.domain.Project;
 import com.example.demo.projectuser.domain.ProjectUsers;
 import com.example.demo.user.domain.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,7 +25,8 @@ import java.util.UUID;
 public class Timesheet {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "timesheet_generator")
+    @SequenceGenerator(name = "timesheet_generator", sequenceName = "timesheet_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

@@ -43,7 +43,7 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "project_id")
     private Long id;
 
     @Builder.Default
