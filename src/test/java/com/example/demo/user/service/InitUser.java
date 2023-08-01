@@ -4,6 +4,7 @@ import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserForm;
 import com.example.demo.user.enums.UserRole;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class InitUser {
@@ -18,7 +19,7 @@ public class InitUser {
                 .userRole(UserRole.ADMINISTRATOR)
                 .password("pass")
                 .email("jackson@gmail.com")
-                .salaryPerHour(35)
+                .salaryPerHour(BigDecimal.valueOf(35))
                 .build();
 
     }
@@ -33,7 +34,7 @@ public class InitUser {
                 .userRole(UserRole.MANAGER)
                 .password("pass")
                 .email("jackson@gmail.com")
-                .salaryPerHour(48)
+                .salaryPerHour(BigDecimal.valueOf(48))
                 .build();
 
     }
@@ -46,7 +47,7 @@ public class InitUser {
                 .userRole(UserRole.MANAGER)
                 .password("passover")
                 .email("jackson@gmail.com")
-                .salaryPerHour(120)
+                .salaryPerHour(BigDecimal.valueOf(120))
                 .build();
     }
 }

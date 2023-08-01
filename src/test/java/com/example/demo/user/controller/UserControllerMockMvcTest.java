@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.math.BigDecimal;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -41,7 +43,7 @@ public class UserControllerMockMvcTest {
                 UserRole.ADMINISTRATOR,
                 "",
                 "emailgmail.com",
-                0
+                BigDecimal.ZERO
         );
         ObjectMapper objectMapper = new ObjectMapper();
 

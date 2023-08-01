@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -17,6 +18,7 @@ public class ReportController {
 
     private final ReportMaker reportMaker;
     private final ReportProjectMaker reportProjectMaker;
+    private final ReportWorkEmployeeService reportWorkEmployeeService;
 
     @GetMapping("/users/{userUuid}")
     public ReportUserDto getReportUser(@RequestParam UUID uuid,
@@ -35,4 +37,10 @@ public class ReportController {
                                              @RequestParam(required = false) PeriodTime periodTime) {
         return reportProjectMaker.projectInfo(uuid, projectUuid, timeFrom, timeTo, periodTime);
     }
+
+    @GetMapping
+    public List<ReportWorkEmployee> getReport(@RequestParam String name) {
+        return reportWorkEmployeeService.getReportWorkEmployee(name);
+    }
+
 }
