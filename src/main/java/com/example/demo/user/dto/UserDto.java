@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -16,19 +17,21 @@ public class UserDto {
 
     @EqualsAndHashCode.Include
     private final UUID uuid;
-
     private final String login;
-
     private final String lastname;
-
     private final String firstname;
-
     private final UserRole userRole;
-
     private final String password;
-
     private final String email;
+    private final BigDecimal salaryPerHour;
 
-    private final int salaryPerHour;
-
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                "login='" + login + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", userRole=" + userRole +
+                '}';
+    }
 }

@@ -23,17 +23,16 @@ public class UserSpecification implements Specification<User> {
     @Override
     public Predicate toPredicate(final Root<User> root, final CriteriaQuery<?> query, final CriteriaBuilder criteriaBuilder) {
 
-
         List<Predicate> predicates = new ArrayList<>();
 
         if (!ObjectUtils.isEmpty(userSearch.getFirstname())) {
-            predicates.add(criteriaBuilder.like(root.get(User.Fields.firstname), "%"+userSearch.getFirstname().toLowerCase()+"%"));
+            predicates.add(criteriaBuilder.like(root.get(User.Fields.firstname), "%" + userSearch.getFirstname().toLowerCase() + "%"));
         }
         if (!ObjectUtils.isEmpty(userSearch.getLastname())) {
-            predicates.add(criteriaBuilder.like(root.get(User.Fields.lastname), "%"+userSearch.getLastname().toLowerCase()+"%"));
+            predicates.add(criteriaBuilder.like(root.get(User.Fields.lastname), "%" + userSearch.getLastname().toLowerCase() + "%"));
         }
         if (!ObjectUtils.isEmpty(userSearch.getLogin())) {
-            predicates.add(criteriaBuilder.like(root.get(User.Fields.login), "%"+userSearch.getLogin().toLowerCase()+"%"));
+            predicates.add(criteriaBuilder.like(root.get(User.Fields.login), "%" + userSearch.getLogin().toLowerCase() + "%"));
         }
         if (!ObjectUtils.isEmpty(userSearch.getUserRole())) {
             predicates.add(criteriaBuilder.equal(root.get(User.Fields.userRole), userSearch.getUserRole()));
@@ -44,9 +43,6 @@ public class UserSpecification implements Specification<User> {
         if (!ObjectUtils.isEmpty(userSearch.getSalaryMax())) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(User.Fields.salaryPerHour), userSearch.getSalaryMax()));
         }
-
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
-
-
     }
 }

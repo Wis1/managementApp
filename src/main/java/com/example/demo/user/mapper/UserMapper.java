@@ -1,11 +1,13 @@
 package com.example.demo.user.mapper;
 
+import com.example.demo.projectuser.domain.ProjectUsers;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.dto.UserForm;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 
 public class UserMapper {
@@ -48,8 +50,8 @@ public class UserMapper {
                 .build();
     }
 
-    public static List<UserDto> mapToListUserDto(final List<User> userList) {
-        return userList.stream()
+    public static Set<UserDto> mapToListUserDto(final Set<User> users) {
+        return users.stream()
                 .map(u -> new UserDto(
                         u.getUuid(),
                         u.getLogin(),
@@ -60,7 +62,10 @@ public class UserMapper {
                         u.getEmail(),
                         u.getSalaryPerHour()
                 ))
-                .collect(Collectors.toList());
+                .collect(toSet());
     }
 
+    public static Set<User> mapToSetUser(final Set<ProjectUsers> projectUsers) {
+        return projectUsers.stream().map(ProjectUsers::getUser).collect(toSet());
+    }
 }

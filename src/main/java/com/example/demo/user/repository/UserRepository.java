@@ -1,6 +1,7 @@
 package com.example.demo.user.repository;
 
 import com.example.demo.user.domain.User;
+import com.example.demo.user.enums.UserRole;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -21,5 +22,5 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
 
     List<User> findAll(Specification<User> spec);
 
-    Optional<User> findByUuidAndUserRole_Administrator(UUID userUuid);
+    Optional<User> findByUuidAndUserRole(UUID userUuid, UserRole userRole);
 }

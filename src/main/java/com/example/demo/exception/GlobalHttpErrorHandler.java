@@ -38,8 +38,37 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
         return exception.getMessage();
     }
 
+    @ResponseBody
+    @ExceptionHandler(ProjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String projectIsNotFoundExceptionHandler(ProjectNotFoundException exception) {
+        return exception.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(UserIsAlreadyInProject.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String userIsAlreadyInProjectHandler(UserIsAlreadyInProject exception) {
+        return exception.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(TimesheetIsAlreadyExistInThisTimeException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String timesheetIsAlreadyExistInThisTimeExceptionHandler(TimesheetIsAlreadyExistInThisTimeException exception) {
+        return exception.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(UserIsNotConnectWithProjectException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String userOrProjectNotFoundExceptionHandler(UserIsNotConnectWithProjectException exception) {
+        return exception.getMessage();
+    }
+
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()

@@ -7,6 +7,7 @@ import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.UserDto;
 import com.example.demo.user.dto.UserForm;
 import com.example.demo.user.dto.UserSearch;
+import com.example.demo.user.enums.UserRole;
 import com.example.demo.user.mapper.UserMapper;
 import com.example.demo.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(uuid));
     }
 
+    @Transactional
     public void addNewUser(UUID uuid, UserForm userForm) {
         checkIsAdmin(uuid);
         checkLoginExists(userForm.getLogin());
@@ -39,7 +41,7 @@ public class UserService {
     }
 
     public void checkIsAdmin(UUID adminUuid) {
-        userRepository.findByUuidAndUserRole_Administrator(adminUuid)
+        userRepository.findByUuidAndUserRole(adminUuid, UserRole.ADMINISTRATOR)
                 .orElseThrow(() -> new UserIsNotAdministrator(adminUuid));
     }
 
